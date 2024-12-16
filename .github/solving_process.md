@@ -42,6 +42,50 @@
 |:------:|:-----------|
 | Config | - 게임 설정 관리 |
 
+## 1. 숫자 저장
+
+```java
+// BallTest.java
+
+package baseball.entity;
+
+import static org.assertj.core.api.Assertions.*;
+
+import org.junit.jupiter.api.Test;
+
+public class BallTest {
+	@Test
+	void 숫자_저장_후_반환() {
+		int number = 1;
+		Ball ball = new Ball(1);
+		assertThat(number).isEqualTo(ball.getNumber());
+	}
+}
+```
+
+테스트 케이스 생성.
+
+```java
+// Ball.java
+
+package baseball.entity;
+
+public class Ball {
+	private final int number;
+
+	public Ball(int number) {
+		this.number = number;
+	}
+
+	public int getNumber() {
+		return number;
+	}
+}
+```
+
+테스트 케이스에 맞춰 Ball 생성.
+
+
 
 
 
