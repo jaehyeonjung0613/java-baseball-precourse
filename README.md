@@ -128,3 +128,7 @@
 ## 📝 License
 
 This project is [MIT](https://github.com/woowacourse/java-baseball-precourse/blob/master/LICENSE) licensed.
+
+## 🧩 풀이 과정
+
+[solving_process.md](https://github.com/jaehyeonjung0613/java-baseball-precourse/blob/main/.github/solving_process.md)
