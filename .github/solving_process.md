@@ -85,6 +85,74 @@ public class Ball {
 
 테스트 케이스에 맞춰 Ball 생성.
 
+## 2. 숫자 유효성 체크
+
+```java
+// Ball.Constants.java
+
+package baseball.entity;
+
+public final class BallConstants {
+	private BallConstants() {
+	}
+
+	public static final int MIN_NUMBER = 1;
+	public static final int MAX_NUMBER = 9;
+
+	public static final String NUMBER_RANGE_OVER_MESSAGE_FORMAT = "%d ~ %d 범위 내 숫자만 입력 가능합니다.";
+}
+```
+
+유효성 판단에 필요한 상수 클래스 생성.
+
+```java
+// BallTest.java
+
+package baseball.entity;
+
+import static baseball.entity.BallConstants.*;
+
+import org.junit.jupiter.api.Test;
+
+public class BallTest {
+	@Test
+	void 숫자_유효성_체크() {
+		int number = 0;
+		String message = String.format(NUMBER_RANGE_OVER_MESSAGE_FORMAT, MIN_NUMBER, MAX_NUMBER);
+		assertThatThrownBy(() -> new Ball(number)).isInstanceOf(IllegalArgumentException.class).hasMessage(message);
+	}
+}
+```
+
+테스트 케이스 생성.
+
+```java
+// Ball.java
+
+package baseball.entity;
+
+import static baseball.entity.BallConstants.*;
+
+public class Ball {
+	private final int number;
+
+	public Ball(int number) throws IllegalArgumentException {
+		validateNumber(number);
+		this.number = number;
+	}
+
+	private void validateNumber(int number) throws IllegalArgumentException {
+		if (MIN_NUMBER > number || MAX_NUMBER < number) {
+			throw new IllegalArgumentException(String.format(NUMBER_RANGE_OVER_MESSAGE_FORMAT, MIN_NUMBER, MAX_NUMBER));
+		}
+	}
+}
+```
+
+숫자 저장 시 유효성 체크하도록 함.
+
+
+
 
 
 
