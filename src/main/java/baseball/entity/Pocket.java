@@ -1,5 +1,8 @@
 package baseball.entity;
 
+import static baseball.entity.PocketConstants.*;
+
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -10,31 +13,50 @@ public class Pocket {
 	private int[] positions;
 	private Ball[] balls;
 
-	public Pocket(int number) {
+	public Pocket(int number) throws IllegalArgumentException {
 		initialize(Parsers.parseNumberList(number));
 	}
 
-	public Pocket(List<Integer> numberList) {
+	public Pocket(List<Integer> numberList) throws IllegalArgumentException {
 		initialize(numberList);
 	}
 
-	public Pocket(int... numbers) {
+	public Pocket(int... numbers) throws IllegalArgumentException {
 		initialize(numbers);
 	}
 
-	private void initialize(List<Integer> numberList) {
+	private void initialize(List<Integer> numberList) throws IllegalArgumentException {
+		if (numberList == null) {
+			numberList = new ArrayList<>();
+		}
 		initialize(convertNumberArray(numberList));
 	}
 
-	private int[] convertNumberArray(List<Integer> numberList) {
-		return numberList.stream().mapToInt(Integer::intValue).toArray();
+	private int[] convertNumberArray(List<Integer> numberList) throws IllegalArgumentException {
+		return numberList.stream().mapToInt((number) -> {
+			validateNumber(number);
+			return number;
+		}).toArray();
 	}
 
-	private void initialize(int... numbers) {
+	private void validateNumber(Integer number) {
+		if (number == null) {
+			throw new IllegalArgumentException(EMPTY_NUMBER_MESSAGE);
+		}
+	}
+
+	private void initialize(int... numbers) throws IllegalArgumentException {
+		validateNumbers(numbers);
 		positions = new int[BallConstants.MAX_NUMBER + 1];
 		balls = new Ball[Config.NUMBER_LENGTH];
 
 		setup(numbers);
+	}
+
+	private void validateNumbers(int... numbers) {
+		if (numbers.length != Config.NUMBER_LENGTH) {
+			throw new IllegalArgumentException(String.format(NUMBER_LENGTH_OVER_MESSAGE_FORMAT, Config.NUMBER_LENGTH));
+		}
 	}
 
 	private void setup(int... numbers) {
