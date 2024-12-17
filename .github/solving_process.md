@@ -151,7 +151,144 @@ public class Ball {
 
 숫자 저장 시 유효성 체크하도록 함.
 
+## 3. 숫자 순차정보 저장
 
+```java
+// PocketTest.java
+
+package baseball.entity;
+
+import static org.assertj.core.api.Assertions.*;
+
+import java.util.Arrays;
+import java.util.List;
+
+import org.junit.jupiter.api.Test;
+
+public class PocketTest {
+	@Test
+	void 숫자_순차정보_저장_후_반환1() {
+		int numbers = 123;
+		int[] result = {1, 2, 3};
+		Pocket pocket = new Pocket(numbers);
+		assertThat(pocket.getNumbers()).containsExactly(result);
+	}
+
+	@Test
+	void 숫자_순차정보_저장_후_반환2() {
+		List<Integer> numbers = Arrays.asList(1, 2, 3);
+		int[] result = {1, 2, 3};
+		Pocket pocket = new Pocket(numbers);
+		assertThat(pocket.getNumbers()).containsExactly(result);
+	}
+
+	@Test
+	void 숫자_순차정보_저장_후_반환3() {
+		int[] numbers = {1, 2, 3};
+		int[] result = {1, 2, 3};
+		Pocket pocket = new Pocket(numbers);
+		assertThat(pocket.getNumbers()).containsExactly(result);
+	}
+}
+```
+
+테스트 케이스 생성.
+
+```java
+// Config.java
+
+package baseball;
+
+public final class Config {
+	private Config(){}
+
+	public static final int NUMBER_LENGTH = 3;
+}
+```
+
+숫자 자릿수 정의.
+
+```java
+// Parsers.java
+
+package baseball.util;
+
+import java.util.ArrayList;
+import java.util.List;
+
+public final class Parsers {
+	private Parsers() {
+	}
+
+	public static List<Integer> parseNumberList(int number) {
+		List<Integer> numbers = new ArrayList<>();
+		do {
+			numbers.add(0, number % 10);
+			number /= 10;
+		} while (number > 0);
+		return numbers;
+	}
+}
+```
+
+숫자를 순차목록으로 파싱하는 함수 생성.
+
+```java
+package baseball.entity;
+
+import java.util.Arrays;
+import java.util.List;
+
+import baseball.Config;
+import baseball.util.Parsers;
+
+public class Pocket {
+	private int[] positions;
+	private Ball[] balls;
+
+	public Pocket(int number) {
+		initialize(Parsers.parseNumberList(number));
+	}
+
+	public Pocket(List<Integer> numberList) {
+		initialize(numberList);
+	}
+
+	public Pocket(int... numbers) {
+		initialize(numbers);
+	}
+
+	private void initialize(List<Integer> numberList) {
+		initialize(convertNumberArray(numberList));
+	}
+
+	private int[] convertNumberArray(List<Integer> numberList) {
+		return numberList.stream().mapToInt(Integer::intValue).toArray();
+	}
+
+	private void initialize(int... numbers) {
+		positions = new int[BallConstants.MAX_NUMBER + 1];
+		balls = new Ball[Config.NUMBER_LENGTH];
+
+		setup(numbers);
+	}
+
+	private void setup(int... numbers) {
+		int number, length = numbers.length;
+		for (int i = 0; i < length; i++) {
+			number = numbers[i];
+			positions[number] = length - i;
+			balls[i] = new Ball(number);
+		}
+	}
+
+	public int[] getNumbers() {
+		return Arrays.stream(balls).mapToInt(Ball::getNumber).toArray();
+	}
+}
+```
+
+테스트 케이스에 맞춰 Pocket 생성.
 
 
 
