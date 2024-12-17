@@ -290,8 +290,108 @@ public class Pocket {
 
 테스트 케이스에 맞춰 Pocket 생성.
 
+## 4. 숫자 순차정보 유효성 체크
 
+```java
+// PocketConstants.java
 
+package baseball.entity;
+
+public final class PocketConstants {
+	private PocketConstants(){}
+
+	public static final String EMPTY_NUMBER_MESSAGE = "숫자에 NULL 입력이 되었습니다.";
+	public static final String NUMBER_LENGTH_OVER_MESSAGE_FORMAT = "%d 자리 숫자가 입력이 되어야합니다.";
+}
+```
+
+유효성 판단에 필요한 상수 클래스 생성.
+
+```java
+// PocketTest.java
+
+package baseball.entity;
+
+import static baseball.entity.PocketConstants.*;
+import static org.assertj.core.api.Assertions.*;
+
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
+
+import org.junit.jupiter.api.Test;
+
+import baseball.Config;
+
+public class PocketTest {
+	@Test
+	void 숫자_순차정보_유효성_체크1() {
+		List<Integer> numbers = IntStream.range(1, Config.NUMBER_LENGTH).boxed().collect(Collectors.toList());
+		numbers.add(null);
+		assertThatThrownBy(() -> new Pocket(numbers)).isInstanceOf(IllegalArgumentException.class).hasMessage(EMPTY_NUMBER_MESSAGE);
+	}
+
+	@Test
+	void 숫자_순차정보_유효성_체크2() {
+		List<Integer> numbers = IntStream.rangeClosed(1, Config.NUMBER_LENGTH + 1).boxed().collect(Collectors.toList());
+		String message = String.format(NUMBER_LENGTH_OVER_MESSAGE_FORMAT, Config.NUMBER_LENGTH);
+		assertThatThrownBy(() -> new Pocket(numbers)).isInstanceOf(IllegalArgumentException.class).hasMessage(message);
+	}
+}
+```
+
+테스트 케이스 생성.
+
+```java
+// Pocket.java
+
+package baseball.entity;
+
+import static baseball.entity.PocketConstants.*;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import baseball.Config;
+
+public class Pocket {
+	private void initialize(List<Integer> numberList) throws IllegalArgumentException {
+		if (numberList == null) {
+			numberList = new ArrayList<>();
+		}
+		initialize(convertNumberArray(numberList));
+	}
+
+	private int[] convertNumberArray(List<Integer> numberList) throws IllegalArgumentException {
+		return numberList.stream().mapToInt((number) -> {
+			validateNumber(number);
+			return number;
+		}).toArray();
+	}
+
+	private void validateNumber(Integer number) {
+		if (number == null) {
+			throw new IllegalArgumentException(EMPTY_NUMBER_MESSAGE);
+		}
+	}
+
+	private void initialize(int... numbers) throws IllegalArgumentException {
+		validateNumbers(numbers);
+		positions = new int[BallConstants.MAX_NUMBER + 1];
+		balls = new Ball[Config.NUMBER_LENGTH];
+
+		setup(numbers);
+	}
+
+	private void validateNumbers(int... numbers) {
+		if (numbers.length != Config.NUMBER_LENGTH) {
+			throw new IllegalArgumentException(String.format(NUMBER_LENGTH_OVER_MESSAGE_FORMAT, Config.NUMBER_LENGTH));
+		}
+	}
+}
+```
+
+숫자 순차정보 저장 시 유효성 체크하도록 함.
 
 
 
