@@ -393,6 +393,51 @@ public class Pocket {
 
 숫자 순차정보 저장 시 유효성 체크하도록 함.
 
+## 5. 비교 결과 저장
 
+```java
+// ScoreTest.java
 
+package baseball.entity;
 
+import static org.assertj.core.api.Assertions.*;
+
+import org.junit.jupiter.api.Test;
+
+public class ScoreTest {
+	@Test
+	void 비교_결과_저장_후_반환() {
+		int strike = 0, ball = 0;
+		Score score = new Score(strike, ball);
+		assertThat(score.getStrike()).isEqualTo(strike);
+		assertThat(score.getBall()).isEqualTo(ball);
+	}
+}
+```
+테스트 케이스 생성.
+
+```java
+// Score.java
+
+package baseball.entity;
+
+public class Score {
+	private final int strike;
+	private final int ball;
+
+	public Score(int strike, int ball) {
+		this.strike = strike;
+		this.ball = ball;
+	}
+
+	public int getStrike() {
+		return strike;
+	}
+
+	public int getBall() {
+		return ball;
+	}
+}
+```
+
+테스트 케이스에 맞춰 Score 생성.
