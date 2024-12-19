@@ -71,4 +71,21 @@ public class Pocket {
 	public int[] getNumbers() {
 		return Arrays.stream(balls).mapToInt(Ball::getNumber).toArray();
 	}
+
+	public Score compare(Pocket other) throws IllegalArgumentException {
+		int[] numbers = other.getNumbers();
+		int strike = 0, ball = 0, length = numbers.length;
+
+		int number, position;
+		for (int i = 0; i < length; i++) {
+			number = numbers[i];
+			position = length - i;
+			if (this.positions[number] == position) {
+				strike++;
+			} else if (this.positions[number] > 0) {
+				ball++;
+			}
+		}
+		return new Score(strike, ball);
+	}
 }

@@ -51,4 +51,40 @@ public class PocketTest {
 		String message = String.format(NUMBER_LENGTH_OVER_MESSAGE_FORMAT, Config.NUMBER_LENGTH);
 		assertThatThrownBy(() -> new Pocket(numbers)).isInstanceOf(IllegalArgumentException.class).hasMessage(message);
 	}
+
+	@Test
+	void 숫자_순차정보_비교_및_결과_반환1() {
+		Pocket pocketA = new Pocket(123), pocketB = new Pocket(123);
+		int strike = 3, ball = 0;
+		Score score = pocketA.compare(pocketB);
+		assertThat(score.getStrike()).isEqualTo(strike);
+		assertThat(score.getBall()).isEqualTo(ball);
+	}
+
+	@Test
+	void 숫자_순차정보_비교_및_결과_반환2() {
+		Pocket pocketA = new Pocket(123), pocketB = new Pocket(132);
+		int strike = 1, ball = 2;
+		Score score = pocketA.compare(pocketB);
+		assertThat(score.getStrike()).isEqualTo(strike);
+		assertThat(score.getBall()).isEqualTo(ball);
+	}
+
+	@Test
+	void 숫자_순차정보_비교_및_결과_반환3() {
+		Pocket pocketA = new Pocket(123), pocketB = new Pocket(312);
+		int strike = 0, ball = 3;
+		Score score = pocketA.compare(pocketB);
+		assertThat(score.getStrike()).isEqualTo(strike);
+		assertThat(score.getBall()).isEqualTo(ball);
+	}
+
+	@Test
+	void 숫자_순차정보_비교_및_결과_반환4() {
+		Pocket pocketA = new Pocket(123), pocketB = new Pocket(456);
+		int strike = 0, ball = 0;
+		Score score = pocketA.compare(pocketB);
+		assertThat(score.getStrike()).isEqualTo(strike);
+		assertThat(score.getBall()).isEqualTo(ball);
+	}
 }
