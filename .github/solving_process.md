@@ -200,7 +200,8 @@ public class PocketTest {
 package baseball;
 
 public final class Config {
-	private Config(){}
+	private Config() {
+	}
 
 	public static final int NUMBER_LENGTH = 3;
 }
@@ -298,7 +299,8 @@ public class Pocket {
 package baseball.entity;
 
 public final class PocketConstants {
-	private PocketConstants(){}
+	private PocketConstants() {
+	}
 
 	public static final String EMPTY_NUMBER_MESSAGE = "숫자에 NULL 입력이 되었습니다.";
 	public static final String NUMBER_LENGTH_OVER_MESSAGE_FORMAT = "%d 자리 숫자가 입력이 되어야합니다.";
@@ -328,7 +330,8 @@ public class PocketTest {
 	void 숫자_순차정보_유효성_체크1() {
 		List<Integer> numbers = IntStream.range(1, Config.NUMBER_LENGTH).boxed().collect(Collectors.toList());
 		numbers.add(null);
-		assertThatThrownBy(() -> new Pocket(numbers)).isInstanceOf(IllegalArgumentException.class).hasMessage(EMPTY_NUMBER_MESSAGE);
+		assertThatThrownBy(() -> new Pocket(numbers)).isInstanceOf(IllegalArgumentException.class)
+			.hasMessage(EMPTY_NUMBER_MESSAGE);
 	}
 
 	@Test
@@ -414,6 +417,7 @@ public class ScoreTest {
 	}
 }
 ```
+
 테스트 케이스 생성.
 
 ```java
@@ -450,7 +454,8 @@ public class Score {
 package baseball.entity;
 
 public final class ScoreConstants {
-	private ScoreConstants(){}
+	private ScoreConstants() {
+	}
 
 	public static final String SCORE_OVER_MESSAGE = "부여할 수 있는 점수 한계치가 벗어났습니다.";
 	public static final String SCORE_NOT_NEGATIVE_MESSAGE = "점수는 음수가 될 수 없습니다.";
@@ -539,3 +544,102 @@ public class Score {
 ```
 
 비교 결과 저장 시 유효성 체크하도록 함.
+
+## 7. Pocket 비교 및 결과 반환
+
+```java
+// PocketTest.java
+
+package baseball.entity;
+
+import static baseball.entity.PocketConstants.*;
+import static org.assertj.core.api.Assertions.*;
+
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
+
+import org.junit.jupiter.api.Test;
+
+import baseball.Config;
+
+public class PocketTest {
+	@Test
+	void 숫자_순차정보_비교_및_결과_반환1() {
+		Pocket pocketA = new Pocket(123), pocketB = new Pocket(123);
+		int strike = 3, ball = 0;
+		Score score = pocketA.compare(pocketB);
+		assertThat(score.getStrike()).isEqualTo(strike);
+		assertThat(score.getBall()).isEqualTo(ball);
+	}
+
+	@Test
+	void 숫자_순차정보_비교_및_결과_반환2() {
+		Pocket pocketA = new Pocket(123), pocketB = new Pocket(132);
+		int strike = 1, ball = 2;
+		Score score = pocketA.compare(pocketB);
+		assertThat(score.getStrike()).isEqualTo(strike);
+		assertThat(score.getBall()).isEqualTo(ball);
+	}
+
+	@Test
+	void 숫자_순차정보_비교_및_결과_반환3() {
+		Pocket pocketA = new Pocket(123), pocketB = new Pocket(312);
+		int strike = 0, ball = 3;
+		Score score = pocketA.compare(pocketB);
+		assertThat(score.getStrike()).isEqualTo(strike);
+		assertThat(score.getBall()).isEqualTo(ball);
+	}
+
+	@Test
+	void 숫자_순차정보_비교_및_결과_반환4() {
+		Pocket pocketA = new Pocket(123), pocketB = new Pocket(456);
+		int strike = 0, ball = 0;
+		Score score = pocketA.compare(pocketB);
+		assertThat(score.getStrike()).isEqualTo(strike);
+		assertThat(score.getBall()).isEqualTo(ball);
+	}
+}
+```
+
+테스트 케이스 생성.
+
+```java
+// Pocket.java
+
+package baseball.entity;
+
+import static baseball.entity.PocketConstants.*;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+import baseball.Config;
+import baseball.util.Parsers;
+
+public class Pocket {
+	private int[] positions;
+	private Ball[] balls;
+
+	public Score compare(Pocket other) throws IllegalArgumentException {
+		int[] numbers = other.getNumbers();
+		int strike = 0, ball = 0, length = numbers.length;
+
+		int number, position;
+		for (int i = 0; i < length; i++) {
+			number = numbers[i];
+			position = length - i;
+			if (this.positions[number] == position) {
+				strike++;
+			} else if (this.positions[number] > 0) {
+				ball++;
+			}
+		}
+		return new Score(strike, ball);
+	}
+}
+```
+
+숫자 순차정보 비교 기능 생성.
