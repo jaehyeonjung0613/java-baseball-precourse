@@ -441,3 +441,101 @@ public class Score {
 ```
 
 테스트 케이스에 맞춰 Score 생성.
+
+## 6. 비교 결과 유효성 체크
+
+```java
+// ScoreConstants.java
+
+package baseball.entity;
+
+public final class ScoreConstants {
+	private ScoreConstants(){}
+
+	public static final String SCORE_OVER_MESSAGE = "부여할 수 있는 점수 한계치가 벗어났습니다.";
+	public static final String SCORE_NOT_NEGATIVE_MESSAGE = "점수는 음수가 될 수 없습니다.";
+}
+```
+
+유효성 판단에 필요한 상수 클래스 생성.
+
+```java
+// ScoreTest.java
+
+package baseball.entity;
+
+import static baseball.entity.ScoreConstants.*;
+import static org.assertj.core.api.Assertions.*;
+
+import org.junit.jupiter.api.Test;
+
+import baseball.Config;
+
+public class ScoreTest {
+	@Test
+	void 비교_결과_유효성_체크1() {
+		int strike = Config.NUMBER_LENGTH, ball = 1;
+		assertThatThrownBy(() -> new Score(strike, ball)).isInstanceOf(IllegalArgumentException.class)
+			.hasMessage(SCORE_OVER_MESSAGE);
+	}
+
+	@Test
+	void 비교_결과_유효성_체크2() {
+		int strike = -1, ball = 0;
+		assertThatThrownBy(() -> new Score(strike, ball)).isInstanceOf(IllegalArgumentException.class)
+			.hasMessage(SCORE_NOT_NEGATIVE_MESSAGE);
+	}
+
+	@Test
+	void 비교_결과_유효성_체크3() {
+		int strike = 0, ball = -1;
+		assertThatThrownBy(() -> new Score(strike, ball)).isInstanceOf(IllegalArgumentException.class)
+			.hasMessage(SCORE_NOT_NEGATIVE_MESSAGE);
+	}
+}
+```
+
+테스트 케이스 생성.
+
+```java
+// Score.java
+
+package baseball.entity;
+
+import static baseball.entity.ScoreConstants.*;
+
+import baseball.Config;
+
+public class Score {
+	private final int strike;
+	private final int ball;
+
+	public Score(int strike, int ball) throws IllegalArgumentException {
+		validateScore(strike, ball);
+		this.strike = strike;
+		this.ball = ball;
+	}
+
+	private void validateScore(int strike, int ball) throws IllegalArgumentException {
+		if (strike + ball > Config.NUMBER_LENGTH) {
+			throw new IllegalArgumentException(SCORE_OVER_MESSAGE);
+		}
+		validateStrike(strike);
+		validateBall(ball);
+	}
+
+	private void validateStrike(int strike) throws IllegalArgumentException {
+		if (strike < 0) {
+			throw new IllegalArgumentException(SCORE_NOT_NEGATIVE_MESSAGE);
+		}
+	}
+
+	private void validateBall(int ball) throws IllegalArgumentException {
+		if (ball < 0) {
+			throw new IllegalArgumentException(SCORE_NOT_NEGATIVE_MESSAGE);
+		}
+	}
+}
+```
+
+비교 결과 저장 시 유효성 체크하도록 함.
