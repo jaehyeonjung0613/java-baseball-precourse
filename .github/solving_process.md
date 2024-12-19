@@ -747,3 +747,65 @@ public class Score {
 ```
 
 비교 결과 문구 출력 기능 생성.
+
+## 9. 입출력
+
+```java
+// Input.java
+
+package baseball.ui.input;
+
+public interface Input {
+	String readline();
+}
+```
+
+```java
+// Output.java
+
+package baseball.ui.output;
+
+public interface Output {
+	void print(String message);
+
+	void printByFormat(String format, Object... args);
+}
+```
+
+입출력 인터페이스 생성.
+
+```java
+// ConsoleInput.java
+
+package baseball.ui.input;
+
+import camp.nextstep.edu.missionutils.Console;
+
+public class ConsoleInput implements Input {
+	@Override
+	public String readline() {
+		return Console.readLine();
+	}
+}
+```
+
+```java
+// ConsoleOutput.java
+
+package baseball.ui.output;
+
+public class ConsoleOutput implements Output {
+	@Override
+	public void print(String message) {
+		System.out.println(message);
+	}
+
+	@Override
+	public void printByFormat(String format, Object... args) {
+		System.out.printf((format) + "%n", args);
+	}
+}
+```
+
+주어진 기능을 활용하여 콘솔 입출력 기능 구현.
+
