@@ -2,6 +2,8 @@ package baseball.entity;
 
 import static baseball.entity.ScoreConstants.*;
 
+import java.util.StringJoiner;
+
 import baseball.Config;
 
 public class Score {
@@ -40,5 +42,19 @@ public class Score {
 
 	public int getBall() {
 		return ball;
+	}
+
+	public String getResultMessage() {
+		StringJoiner message = new StringJoiner(RESULT_MESSAGE_SEPARATOR);
+		if (this.ball > 0) {
+			message.add(String.format("%d%s", this.ball, BALL_MESSAGE));
+		}
+		if (this.strike > 0) {
+			message.add(String.format("%d%s", this.strike, STRIKE_MESSAGE));
+		}
+		if (this.ball == 0 && this.strike == 0) {
+			message.setEmptyValue(ZERO_SCORE_MESSAGE);
+		}
+		return message.toString();
 	}
 }
