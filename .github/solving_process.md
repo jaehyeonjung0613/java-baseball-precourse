@@ -643,3 +643,107 @@ public class Pocket {
 ```
 
 숫자 순차정보 비교 기능 생성.
+
+## 8. 비교 결과 문구 반환
+
+```java
+// ScoreConstants.java
+
+package baseball.entity;
+
+public final class ScoreConstants {
+	private ScoreConstants(){}
+
+	public static final String RESULT_MESSAGE_SEPARATOR = " ";
+	public static final String STRIKE_MESSAGE = "스트라이크";
+	public static final String BALL_MESSAGE = "볼";
+	public static final String ZERO_SCORE_MESSAGE = "낫싱";
+}
+```
+
+비교 결과 문구 관련 상수 선언.
+
+```java
+// ScoreTest.java
+
+package baseball.entity;
+
+import static baseball.entity.ScoreConstants.*;
+import static org.assertj.core.api.Assertions.*;
+
+import org.junit.jupiter.api.Test;
+
+import baseball.Config;
+
+public class ScoreTest {
+	@Test
+	void 비교_결과_문구_반환1() {
+		int strike = 3, ball = 0;
+		String message = String.format("%d%s", strike, STRIKE_MESSAGE);
+
+		Score score = new Score(strike, ball);
+		assertThat(score.getResultMessage()).isEqualTo(message);
+	}
+
+	@Test
+	void 비교_결과_문구_반환2() {
+		int strike = 1, ball = 1;
+		String message = String.format("%d%s%s%d%s", ball, BALL_MESSAGE, RESULT_MESSAGE_SEPARATOR, strike, STRIKE_MESSAGE);
+
+		Score score = new Score(strike, ball);
+		assertThat(score.getResultMessage()).isEqualTo(message);
+	}
+
+	@Test
+	void 비교_결과_문구_반환3() {
+		int strike = 0, ball = 3;
+		String message = String.format("%d%s", ball, BALL_MESSAGE);
+
+		Score score = new Score(strike, ball);
+		assertThat(score.getResultMessage()).isEqualTo(message);
+	}
+
+	@Test
+	void 비교_결과_문구_반환4() {
+		int strike = 0, ball = 0;
+
+		Score score = new Score(strike, ball);
+		assertThat(score.getResultMessage()).isEqualTo(ZERO_SCORE_MESSAGE);
+	}
+}
+```
+
+테스트 케이스 생성.
+
+```java
+// Score.java
+
+package baseball.entity;
+
+import static baseball.entity.ScoreConstants.*;
+
+import java.util.StringJoiner;
+
+import baseball.Config;
+
+public class Score {
+	private final int strike;
+	private final int ball;
+	
+	public String getResultMessage() {
+		StringJoiner message = new StringJoiner(RESULT_MESSAGE_SEPARATOR);
+		if (this.ball > 0) {
+			message.add(String.format("%d%s", this.ball, BALL_MESSAGE));
+		}
+		if (this.strike > 0) {
+			message.add(String.format("%d%s", this.strike, STRIKE_MESSAGE));
+		}
+		if (this.ball == 0 && this.strike == 0) {
+			message.setEmptyValue(ZERO_SCORE_MESSAGE);
+		}
+		return message.toString();
+	}
+}
+```
+
+비교 결과 문구 출력 기능 생성.
