@@ -38,7 +38,11 @@ public class InputHelper {
 		}
 	}
 
-	public Integer getNumbersInRange(int startInclusive, int endInclusive) {
-		return this.getNumber();
+	public Integer getNumbersInRange(int startInclusive, int endInclusive) throws IllegalArgumentException {
+		Integer number = this.getNumber();
+		if (number < startInclusive || number > endInclusive) {
+			throw new IllegalArgumentException(NUMBER_RANGE_OVER_MESSAGE);
+		}
+		return number;
 	}
 }

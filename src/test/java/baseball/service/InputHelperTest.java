@@ -56,4 +56,14 @@ public class InputHelperTest {
 		InputHelper helper = new InputHelper(consoleInput);
 		assertThat(helper.getNumbersInRange(1, 2)).isEqualTo(1);
 	}
+
+	@Test
+	void 숫자_범위_명령어_입력_유효성_체크() {
+		ConsoleInput consoleInput = Mockito.mock(ConsoleInput.class);
+		Mockito.when(consoleInput.readline()).thenReturn("3");
+
+		InputHelper helper = new InputHelper(consoleInput);
+		assertThatThrownBy(() -> helper.getNumbersInRange(1, 2)).isInstanceOf(
+			IllegalArgumentException.class).hasMessage(NUMBER_RANGE_OVER_MESSAGE);
+	}
 }
