@@ -57,4 +57,8 @@ public class Score {
 		}
 		return message.toString();
 	}
+
+	public boolean isPerfect() {
+		return this.strike == Config.NUMBER_LENGTH;
+	}
 }

@@ -72,4 +72,20 @@ public class ScoreTest {
 		Score score = new Score(strike, ball);
 		assertThat(score.getResultMessage()).isEqualTo(ZERO_SCORE_MESSAGE);
 	}
+
+	@Test
+	void 만점_여부_체크1() {
+		int strike = Config.NUMBER_LENGTH, ball = 0;
+
+		Score score = new Score(strike, ball);
+		assertThat(score.isPerfect()).isEqualTo(true);
+	}
+
+	@Test
+	void 만점_여부_체크2() {
+		int strike = 0, ball = 0;
+
+		Score score = new Score(strike, ball);
+		assertThat(score.isPerfect()).isEqualTo(false);
+	}
 }
