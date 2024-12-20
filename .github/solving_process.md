@@ -1068,3 +1068,75 @@ public class InputHelper {
 ```
 
 숫자 범위 명령어 입력 기능 생성.
+
+## 13. 숫자 범위 명령어 입력 유효성 체크
+
+```java
+// InputHelperConstants.java
+
+package baseball.service;
+
+public final class InputHelperConstants {
+	private InputHelperConstants(){}
+
+	public static final String NUMBER_RANGE_OVER_MESSAGE = "주어진 범위에서 벗어난 숫자가 입력되었습니다.";
+}
+
+```
+
+유효성 판단 관련 상수 정의.
+
+```java
+// InputHelperTest.java
+
+package baseball.service;
+
+import static baseball.service.InputHelperConstants.*;
+import static org.assertj.core.api.Assertions.*;
+
+import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
+
+import baseball.Config;
+import baseball.ui.input.ConsoleInput;
+
+public class InputHelperTest {
+	@Test
+	void 숫자_범위_명령어_입력_유효성_체크() {
+		ConsoleInput consoleInput = Mockito.mock(ConsoleInput.class);
+		Mockito.when(consoleInput.readline()).thenReturn("3");
+
+		InputHelper helper = new InputHelper(consoleInput);
+		assertThatThrownBy(() -> helper.getNumbersInRange(1, 2)).isInstanceOf(
+			IllegalArgumentException.class).hasMessage(NUMBER_RANGE_OVER_MESSAGE);
+	}
+}
+```
+
+테스트 케이스 생성.
+
+```java
+// InputHelper.java
+
+package baseball.service;
+
+import static baseball.service.InputHelperConstants.*;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import baseball.ui.input.Input;
+import baseball.util.Parsers;
+
+public class InputHelper {
+	public Integer getNumbersInRange(int startInclusive, int endInclusive) throws IllegalArgumentException {
+		Integer number = this.getNumber();
+		if (number < startInclusive || number > endInclusive) {
+			throw new IllegalArgumentException(NUMBER_RANGE_OVER_MESSAGE);
+		}
+		return number;
+	}
+}
+```
+
+숫자 범위 입력 받을시 범위 유효성 체크.
