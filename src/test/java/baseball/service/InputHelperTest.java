@@ -47,4 +47,13 @@ public class InputHelperTest {
 		assertThatThrownBy(() -> helper.getNumberList(Config.COMMAND_SEPARATOR)).isInstanceOf(
 			IllegalArgumentException.class).hasMessage(NOT_NUMERIC_STRING_MESSAGE);
 	}
+
+	@Test
+	void 숫자_범위_명령어_입력_처리() {
+		ConsoleInput consoleInput = Mockito.mock(ConsoleInput.class);
+		Mockito.when(consoleInput.readline()).thenReturn("1");
+
+		InputHelper helper = new InputHelper(consoleInput);
+		assertThat(helper.getNumbersInRange(1, 2)).isEqualTo(1);
+	}
 }

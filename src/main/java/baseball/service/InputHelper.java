@@ -37,4 +37,8 @@ public class InputHelper {
 			throw new IllegalArgumentException(NOT_NUMERIC_STRING_MESSAGE);
 		}
 	}
+
+	public Integer getNumbersInRange(int startInclusive, int endInclusive) {
+		return this.getNumber();
+	}
 }
