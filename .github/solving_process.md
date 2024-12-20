@@ -916,3 +916,101 @@ public class InputHelper {
 ```
 
 숫자 명령어 입력 처리 기능 생성.
+
+## 11. 숫자 명령어 입력 유효성 체크
+
+```java
+// InputHelperConstants.java
+
+package baseball.service;
+
+public final class InputHelperConstants {
+	private InputHelperConstants(){}
+
+	public static final String NOT_NUMERIC_STRING_MESSAGE = "숫자만 입력 가능합니다.";
+}
+```
+
+유효성 판단 관련 상수 정의.
+
+```java
+// InputHelperTest.java
+
+package baseball.service;
+
+import static baseball.service.InputHelperConstants.*;
+import static org.assertj.core.api.Assertions.*;
+
+import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
+
+import baseball.Config;
+import baseball.ui.input.ConsoleInput;
+
+public class InputHelperTest {
+	@Test
+	void 숫자_명령어_입력_유효성_체크1() {
+		ConsoleInput consoleInput = Mockito.mock(ConsoleInput.class);
+		Mockito.when(consoleInput.readline()).thenReturn("i23");
+
+		InputHelper helper = new InputHelper(consoleInput);
+		assertThatThrownBy(helper::getNumber).isInstanceOf(IllegalArgumentException.class)
+			.hasMessage(NOT_NUMERIC_STRING_MESSAGE);
+	}
+
+	@Test
+	void 숫자_명령어_입력_유효성_체크2() {
+		ConsoleInput consoleInput = Mockito.mock(ConsoleInput.class);
+		Mockito.when(consoleInput.readline()).thenReturn("i23");
+
+		InputHelper helper = new InputHelper(consoleInput);
+		assertThatThrownBy(() -> helper.getNumberList(Config.COMMAND_SEPARATOR)).isInstanceOf(
+			IllegalArgumentException.class).hasMessage(NOT_NUMERIC_STRING_MESSAGE);
+	}
+}
+```
+
+테스트 케이스 생성.
+
+```java
+// InputHelper.java
+
+package baseball.service;
+
+import static baseball.service.InputHelperConstants.*;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import baseball.ui.input.Input;
+import baseball.util.Parsers;
+
+public class InputHelper {
+	private final Input input;
+
+	public Integer getNumber() throws IllegalArgumentException {
+		String strNumber = input.readline();
+		validateNumericString(strNumber);
+		return Parsers.parseNumber(strNumber);
+	}
+
+	public List<Integer> getNumberList(String separator) throws IllegalArgumentException {
+		List<Integer> numberList = new ArrayList<>();
+		String strNumberList = input.readline();
+
+		for (String strNumber : strNumberList.split(separator)) {
+			validateNumericString(strNumber);
+			numberList.add(Parsers.parseNumber(strNumber));
+		}
+		return numberList;
+	}
+
+	private void validateNumericString(String strNumber) throws IllegalArgumentException {
+		if (!strNumber.chars().allMatch(Character::isDigit)) {
+			throw new IllegalArgumentException(NOT_NUMERIC_STRING_MESSAGE);
+		}
+	}
+}
+```
+
+숫자 명령어 입력 유효성 체크 기능 생성.
