@@ -1228,3 +1228,85 @@ public class ConsoleOutput implements Output {
 
 콘솔 개행 출력 여부에 따라 함수 호출 분리.
 
+## 16. 숫자 순차정보 입력 처리
+
+```java
+// GameConstants.java
+
+package baseball.service;
+
+public final class GameConstants {
+	private GameConstants(){}
+
+	public static final String REQUEST_NUMBER_LIST_QUERY = "숫자를 입력해주세요 : ";
+}
+```
+
+숫자 순차정보 입력 절의문 상수 선언.
+
+```java
+// GameTest.java
+
+package baseball.service;
+
+import static org.assertj.core.api.Assertions.*;
+
+import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
+
+import baseball.entity.Pocket;
+import baseball.ui.input.ConsoleInput;
+import baseball.ui.output.ConsoleOutput;
+
+public class GameTest {
+	@Test
+	void 숫자_순차정보_입력_처리() {
+		ConsoleInput consoleInput = Mockito.mock(ConsoleInput.class);
+		Mockito.when(consoleInput.readline()).thenReturn("123");
+
+		InputHelper inputHelper = new InputHelper(consoleInput);
+		ConsoleOutput output = new ConsoleOutput();
+		Pocket answer = new Pocket(123);
+		Game game = new Game(inputHelper, output, answer);
+
+		assertThat(game.requestNumberList().getNumbers()).containsExactly(1, 2, 3);
+	}
+}
+```
+
+테스트 케이스 생성.
+
+```java
+// Game.java
+
+package baseball.service;
+
+import static baseball.service.GameConstants.*;
+
+import java.util.List;
+
+import baseball.Config;
+import baseball.entity.Pocket;
+import baseball.ui.output.Output;
+
+public class Game {
+	private final InputHelper inputHelper;
+	private final Output output;
+	private final Pocket answer;
+
+	public Game(InputHelper inputHelper, Output output, Pocket answer) {
+		this.inputHelper = inputHelper;
+		this.output = output;
+		this.answer = answer;
+	}
+
+	public Pocket requestNumberList() throws IllegalArgumentException {
+		output.print(REQUEST_NUMBER_LIST_QUERY);
+		List<Integer> numberList = inputHelper.getNumberList(Config.COMMAND_SEPARATOR);
+		return new Pocket(numberList);
+	}
+}
+```
+
+숫자 순차정보 입력 기능 생성.
+
