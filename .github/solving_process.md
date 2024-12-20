@@ -809,3 +809,110 @@ public class ConsoleOutput implements Output {
 
 주어진 기능을 활용하여 콘솔 입출력 기능 구현.
 
+## 10. 숫자 명령어 입력 처리
+
+```java
+// Config.java
+package baseball;
+
+public final class Config {
+	private Config(){}
+
+	public static final String COMMAND_SEPARATOR = "";
+}
+```
+
+명령어 구분자 정의.
+
+```java
+// InputHelperTest.java
+
+package baseball.service;
+
+import org.mockito.Mock;
+import org.mockito.Mockito;
+
+import static org.assertj.core.api.Assertions.*;
+
+import baseball.Config;
+import baseball.ui.input.ConsoleInput;
+
+import org.junit.jupiter.api.Test;
+
+public class InputHelperTest {
+	@Test
+	void 숫자_입력_명령어_처리1() {
+		ConsoleInput consoleInput = Mockito.mock(ConsoleInput.class);
+		Mockito.when(consoleInput.readline()).thenReturn("123");
+
+		InputHelper helper = new InputHelper(consoleInput);
+		assertThat(helper.getNumber()).isEqualTo(123);
+	}
+
+	@Test
+	void 숫자_입력_명령어_처리2() {
+		ConsoleInput consoleInput = Mockito.mock(ConsoleInput.class);
+		Mockito.when(consoleInput.readline()).thenReturn("123");
+
+		InputHelper helper = new InputHelper(consoleInput);
+		assertThat(helper.getNumberList(Config.COMMAND_SEPARATOR)).containsExactly(1, 2, 3);
+	}
+}
+```
+
+테스트 케이스 생성.
+
+```java
+// Parser.java
+
+package baseball.util;
+
+public final class Parsers {
+	private Parsers() {
+	}
+	
+	public static Integer parseNumber(String strNumber) {
+		return Integer.valueOf(strNumber);
+	}
+}
+```
+
+문자열 숫자형태 파싱 기능 생성.
+
+```java
+// InputHelper.java
+
+package baseball.service;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import baseball.ui.input.Input;
+import baseball.util.Parsers;
+
+public class InputHelper {
+	private final Input input;
+
+	public InputHelper(Input input) {
+		this.input = input;
+	}
+
+	public Integer getNumber() {
+		String strNumber = input.readline();
+
+		return Parsers.parseNumber(strNumber);
+	}
+
+	public List<Integer> getNumberList(String separator) {
+		List<Integer> numberList = new ArrayList<>();
+		String strNumberList = input.readline();
+
+		for (String strNumber : strNumberList.split(separator)) {
+			numberList.add(Parsers.parseNumber(strNumber));
+		}
+		return numberList;
+	}
+}
+```
+
+숫자 명령어 입력 처리 기능 생성.
