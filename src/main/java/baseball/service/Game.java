@@ -24,4 +24,8 @@ public class Game {
 		List<Integer> numberList = inputHelper.getNumberList(Config.COMMAND_SEPARATOR);
 		return new Pocket(numberList);
 	}
+
+	public void finish() {
+		this.output.println(String.format(GAME_FINISH_MESSAGE_FORMAT, Config.NUMBER_LENGTH));
+	}
 }
