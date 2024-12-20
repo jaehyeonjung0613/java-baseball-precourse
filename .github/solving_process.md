@@ -1195,3 +1195,36 @@ public class Score {
 ```
 
 만점 여부 체크 기능 생성.
+
+## 15. 개행 출력 구분
+
+```java
+// Output.java
+package baseball.ui.output;
+
+public interface Output {
+	void println(String message);
+}
+```
+출력시 개행을 추가하는 언터페이스 추가.
+
+```java
+// ConsoleOutput.java
+
+package baseball.ui.output;
+
+public class ConsoleOutput implements Output {
+	@Override
+	public void print(String message) {
+		System.out.print(message);
+	}
+
+	@Override
+	public void println(String message) {
+		System.out.println(message);
+	}
+}
+```
+
+콘솔 개행 출력 여부에 따라 함수 호출 분리.
+
