@@ -15,4 +15,8 @@ public final class Parsers {
 		} while (number > 0);
 		return numbers;
 	}
+
+	public static Integer parseNumber(String strNumber) {
+		return Integer.valueOf(strNumber);
+	}
 }
