@@ -1014,3 +1014,57 @@ public class InputHelper {
 ```
 
 숫자 명령어 입력 유효성 체크 기능 생성.
+
+## 12. 숫자 범위 명령어 입력 처리
+
+```java
+// InputHelperTest.java
+
+package baseball.service;
+
+import static baseball.service.InputHelperConstants.*;
+import static org.assertj.core.api.Assertions.*;
+
+import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
+
+import baseball.Config;
+import baseball.ui.input.ConsoleInput;
+
+public class InputHelperTest {
+	@Test
+	void 숫자_범위_명령어_입력_처리() {
+		ConsoleInput consoleInput = Mockito.mock(ConsoleInput.class);
+		Mockito.when(consoleInput.readline()).thenReturn("1");
+
+		InputHelper helper = new InputHelper(consoleInput);
+		assertThat(helper.getNumbersInRange(1, 2)).isEqualTo(1);
+	}
+}
+```
+
+테스트 케이스 생성.
+
+```java
+// InputHelper.java
+
+package baseball.service;
+
+import static baseball.service.InputHelperConstants.*;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import baseball.ui.input.Input;
+import baseball.util.Parsers;
+
+public class InputHelper {
+	private final Input input;
+
+	public Integer getNumbersInRange(int startInclusive, int endInclusive) {
+		return this.getNumber();
+	}
+}
+```
+
+숫자 범위 명령어 입력 기능 생성.
