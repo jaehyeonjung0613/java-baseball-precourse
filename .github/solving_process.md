@@ -1140,3 +1140,58 @@ public class InputHelper {
 ```
 
 숫자 범위 입력 받을시 범위 유효성 체크.
+
+## 14. 만점 여부 체크
+
+```java
+// ScoreTest.java
+
+package baseball.entity;
+
+import static baseball.entity.ScoreConstants.*;
+import static org.assertj.core.api.Assertions.*;
+
+import org.junit.jupiter.api.Test;
+
+import baseball.Config;
+
+public class ScoreTest {
+	@Test
+	void 만점_여부_체크1() {
+		int strike = Config.NUMBER_LENGTH, ball = 0;
+
+		Score score = new Score(strike, ball);
+		assertThat(score.isPerfect()).isEqualTo(true);
+	}
+
+	@Test
+	void 만점_여부_체크2() {
+		int strike = 0, ball = 0;
+
+		Score score = new Score(strike, ball);
+		assertThat(score.isPerfect()).isEqualTo(false);
+	}
+}
+```
+
+테스트 케이스 생성.
+
+```java
+// Score.java
+
+package baseball.entity;
+
+import static baseball.entity.ScoreConstants.*;
+
+import java.util.StringJoiner;
+
+import baseball.Config;
+
+public class Score {
+	public boolean isPerfect() {
+		return this.strike == Config.NUMBER_LENGTH;
+	}
+}
+```
+
+만점 여부 체크 기능 생성.
