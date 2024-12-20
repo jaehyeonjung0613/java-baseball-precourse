@@ -1310,3 +1310,79 @@ public class Game {
 
 숫자 순차정보 입력 기능 생성.
 
+## 17. 게임 종료 메시지 출력
+
+```java
+// GameConstants.java
+
+package baseball.service;
+
+public final class GameConstants {
+	private GameConstants(){}
+    
+	public static final String GAME_FINISH_MESSAGE_FORMAT = "%d개의 숫자를 모두 맞히셨습니다! 게임 종료";
+}
+```
+
+종료 메시지 포멧 상수 선언.
+
+```java
+// GameTest.java
+
+package baseball.service;
+
+import static baseball.service.GameConstants.*;
+import static org.assertj.core.api.Assertions.*;
+
+import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Mockito;
+
+import baseball.Config;
+import baseball.entity.Pocket;
+import baseball.ui.input.ConsoleInput;
+import baseball.ui.output.ConsoleOutput;
+
+public class GameTest {
+	@Test
+	void 게임_종료_메시지_출력() {
+		ArgumentCaptor<String> captor = ArgumentCaptor.forClass(String.class);
+		ConsoleOutput output = Mockito.mock(ConsoleOutput.class);
+
+		InputHelper inputHelper = new InputHelper(new ConsoleInput());
+		Pocket answer = new Pocket(123);
+		Game game = new Game(inputHelper, output, answer);
+		String message = String.format(GAME_FINISH_MESSAGE_FORMAT, Config.NUMBER_LENGTH);
+
+		game.finish();
+		Mockito.verify(output).println(captor.capture());
+		assertThat(captor.getValue()).isEqualTo(message);
+	}
+}
+```
+
+테스트 케이스 생성.
+
+```java
+// Game.java
+
+package baseball.service;
+
+import static baseball.service.GameConstants.*;
+
+import java.util.List;
+
+import baseball.Config;
+import baseball.entity.Pocket;
+import baseball.ui.output.Output;
+
+public class Game {
+	public void finish() {
+		this.output.println(String.format(GAME_FINISH_MESSAGE_FORMAT, Config.NUMBER_LENGTH));
+	}
+}
+```
+
+게임 종료 메시지 출력 기능 생성.
+
+
